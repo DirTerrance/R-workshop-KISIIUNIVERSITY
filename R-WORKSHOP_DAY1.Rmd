@@ -1,0 +1,283 @@
+---
+title: "**R_WORKSHOP**"
+author: "**DIR.T@ RWILLS_STATS**"
+date: "2/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#   **HARCLUX ENTERPRISE**
+
+
+##           *WELCOME WILFRED TO DATA GURUS*
+
+
+
+ #             **Packages & DATA**
+ 
+### Packages
+```{r packages, message=FALSE}
+#set your working directory
+setwd("~/RSTUDIO FILES/R-WORKSHOP")
+
+#install.packages("titdyverse")
+library(tidyverse)
+
+# install.packages("devtools")
+#devtools::install_github("Shelmith-Kariuki/rChambua")
+
+##package still under development not yet in CRAN
+library(rChambua)
+```
+
+### Data
+
+Reading in your data
+```{r data}
+
+
+#from the rchambua pckg
+##df <- rChambua::wafanyikazi
+
+#raw file
+df <- read.csv("Wafanyikazi.csv",
+               stringsAsFactors = F,
+               header = T)
+
+#checking for column names
+colnames(df)
+
+#checking for dimension
+dim(df)
+
+#checking the strucure of our data
+str(df)
+```
+
+
+
+
+##            **TIDYVERSE** 
+The following are must know functions in Tidyverse package as they will form your day to day data wrangling/management codes.
+
+
+### SELECT 
+
+using the select ()to pick variables
+
+
+```{r select}
+#selecting Age and gender variables
+
+age_gender <- df %>%
+  select(Age, Gender)
+
+head(age_gender)
+
+#checking for variables starting with letter "a"
+starts_a <- df %>%
+  select(starts_with("A"))
+
+head(starts_a)
+
+#contains letter "a"
+contains_a <- df %>%
+  select(contains("A"))
+
+head(contains_a)
+
+#end with ends with letter "a"
+ends_a <- df %>%
+  select(ends_with("t"))
+
+
+head(ends_a)
+```
+
+
+### FILTERING
+
+using the filter() helps us to choose cases where conditions are true.
+
+```{r filter}
+
+#filter females only
+female_data <- df %>%
+  filter(Gender == "Female")
+
+head(female_data)
+
+
+
+#filter age 30 and below
+age_30 <- df %>%
+  filter(Age <= 30)
+
+head(age_30)
+
+
+#filter promotion
+female_data <- df %>%
+  filter(Gender == "Female")
+head(female_data)
+
+
+#filter females nyeri age< 26 from nyeri county earn <5000
+female_nyeri <- df %>%
+  filter(Gender == "Female" & County == "Nyeri" &
+           Age >= 26 & Income < 5000)
+
+head(female_nyeri)
+
+
+#filter females and exclude the juniors
+
+females_NoJnr <- df %>%
+  filter(Gender == "Female" & Income > 6000 & Role != "Junior")
+
+head(females_NoJnr)
+```
+### MUTATE 
+
+using the mutate() helps us to create variables
+
+
+```{r mutate}
+
+
+income_df <- df %>%
+  select(Income) %>%
+  mutate(Income2 = Income * 100)
+
+head(income_df)
+
+
+
+#creating a swahili gender col
+swahili <- df %>%
+  select(Gender) %>%
+  mutate(jinsia =
+           if_else(Gender == "Male", "Mme", "Mke"))
+
+head(swahili)
+```
+
+
+
+#### IFELSE 
+
+using the ifelse() helps us to shift from one condition to another
+
+```{r ifelse}
+
+
+#Nested Ifelse
+##Department
+dep_ifesle <- df %>%
+  select(Department) %>%
+  mutate(Department2 =
+           ifelse(
+             Department == "Finance",
+             'F',
+             ifelse(
+               Department == "Research Analyst" ,
+               "R",
+               ifelse(
+                 Department == "Operations",
+                 "O",
+                 ifelse(Department == "Associate", "A", "D")
+               )
+             )
+           ))
+
+head(dep_ifesle)
+
+
+
+#creating age Groups
+age_group <- df %>%
+  select(Age) %>%
+  mutate(age2 =
+           ifelse(Age < 25, "Young",
+                  ifelse(Age > 25 & Age < 40, "Middle", "old")))
+
+head(age_group)
+```
+
+
+
+
+### Renaming 
+using the rename() helps us to rename variables
+
+
+```{r rename}
+
+#rename age to Miaka(swahili)
+age_miaka <- df %>%
+  rename(miaka = Age)
+
+head(age_miaka)
+```
+
+
+### Group_by & Summarise
+
+Group_by works close with summarise they help us cluster common variable categories and get say statistical summaries of the same.
+
+```{r group_summ}
+
+##Group according to Gender and get the summary stats
+
+gender_group <- df %>%
+  group_by(Gender) %>%
+  summarise(mean_age = mean(Age)) 
+
+head(gender_group)
+
+
+
+
+#group according to Department and get the summary stats
+
+Depart_group <- df %>%
+  group_by(Department) %>%
+  summarise(mean_age = mean(Age))
+
+head(Depart_group)
+
+
+
+#group according to county and get the summary stats
+
+county_group <- df %>%
+  group_by(County) %>%
+  summarise(
+    minimum = min(Income),
+    max = max(Income),
+    mean = mean(Income)
+  )
+
+head(county_group)
+```
+
+# **WELCOME WILFRED TO DATA GURUS TEAM**
+```{r WILFRED}
+
+
+Wilfred <- df %>% 
+  filter(Gender=="Male" &  Income>=5000) 
+  
+Wilfred %>% 
+  group_by(Role,County, Age, Department) %>% 
+  summarise(salary=
+              mean(Income)) %>% 
+  ggplot(aes(Age, salary))+
+  geom_point(aes(color=Role)) +
+  facet_wrap(~Department)
+```
+
