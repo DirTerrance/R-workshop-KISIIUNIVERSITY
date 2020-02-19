@@ -10,10 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-#   **HARCLUX ENTERPRISE**
+# BY  *SHELMITH KARIUKI*
+
+## INTRODUCTION TO TIDYVERSE FOR DATA MANAGEMENT AND INFERENTIAL STATISTICS
 
 
-##           *WELCOME WILFRED TO DATA GURUS*
+##             DAY 1
+###         MORNING SESSION
 
 
 
@@ -265,19 +268,5 @@ county_group <- df %>%
 head(county_group)
 ```
 
-# **WELCOME WILFRED TO DATA GURUS TEAM**
-```{r WILFRED}
 
-
-Wilfred <- df %>% 
-  filter(Gender=="Male" &  Income>=5000) 
-  
-Wilfred %>% 
-  group_by(Role,County, Age, Department) %>% 
-  summarise(salary=
-              mean(Income)) %>% 
-  ggplot(aes(Age, salary))+
-  geom_point(aes(color=Role)) +
-  facet_wrap(~Department)
-```
 
