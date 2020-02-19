@@ -270,3 +270,54 @@ head(county_group)
 
 
 
+# **DAY 2**
+
+# **VISUALIZATION**
+
+### BARGRAPH
+
+
+```{r}
+
+#plotting Bargraphs
+
+#dep_bargraph <-  dep_count %>% 
+#ggplot(aes(x=Department, y=count))+
+ # geom_bar(stat = "identity", fill="blue")+
+  #geom_text(aes(label=count), 
+   #         hjust=.5, vjust=.5,
+    #        size=4)
+  
+ # dep_bargraph
+  
+
+
+#grouping according to department & gender
+
+dep_gender_bar <- df %>% 
+  group_by(Department, Gender) %>% 
+  summarise(count=n())
+
+
+
+# Distribution Per Department & Gender
+
+dep_bargraph2 <-  ggplot(data=dep_gender_bar, 
+                        aes(x=Department, y=count, fill=Gender))+
+  geom_bar(stat = "identity", position = "dodge")+
+  geom_text(aes(label=count), 
+            hjust=.5, vjust=.5,
+            position = position_dodge(width = .9),
+            size=3)+
+  theme_bw()+
+  scale_fill_brewer(palette = 1)+
+  labs(title = "Distribution Per Department & Gender",
+       x= "Department",
+       y= "Count")
+
+dep_bargraph2
+
+
+
+```
+
